@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Estação Carreteiro | Sabor de Verdade</title>
+
+  <meta name="description" content="Conheça a Estação Carreteiro! Venha experimentar nosso arroz carreteiro na Feira de Empreendedorismo do Colégio Athenas, em Uberlândia.">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff8ed;
+      color: #38251b;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #422719;
+      color: white;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+      color: #ffc15e;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #ffc15e;
+    }
+
+    .hero {
+      min-height: 550px;
+      padding: 80px 7%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      background:
+        linear-gradient(
+          rgba(35, 19, 10, 0.72),
+          rgba(35, 19, 10, 0.78)
+        ),
+        url("https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1600&q=85")
+        center/cover;
+    }
+
+    .hero-content {
+      max-width: 780px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #ffc15e;
+      color: #422719;
+      padding: 8px 17px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 7vw, 68px);
+      line-height: 1.1;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 span {
+      color: #ffc15e;
+    }
+
+    .hero p {
+      font-size: 19px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #e99b2e;
+      color: #301b10;
+      padding: 14px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: #ffc15e;
+      transform: translateY(-2px);
+    }
+
+    section {
+      padding: 70px 7%;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 34px;
+      line-height: 1.2;
+      color: #5a301b;
+      margin-bottom: 15px;
+    }
+
+    .section-text {
+      max-width: 650px;
+      margin: 0 auto 35px;
+      color: #705c4d;
+    }
+
+    .food-card {
+      max-width: 430px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(66, 39, 25, 0.12);
+      text-align: left;
+    }
+
+    .food-card img {
+      display: block;
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+    }
+
+    .food-info {
+      padding: 25px;
+    }
+
+    .food-info h3 {
+      font-size: 25px;
+      margin-bottom: 10px;
+    }
+
+    .food-info p {
+      color: #705c4d;
+      margin-bottom: 15px;
+    }
+
+    .price {
+      color: #a4511d;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .features {
+      background: #f4e5cf;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+      max-width: 1000px;
+      margin: 35px auto 0;
+    }
+
+    .feature {
+      background: white;
+      padding: 28px 20px;
+      border-radius: 14px;
+    }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .feature h3 {
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: #705c4d;
+    }
+
+    .location-box {
+      background: white;
+      border: 1px solid #ead8c2;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 650px;
+      margin: 30px auto 0;
+    }
+
+    .location-box p {
+      margin: 10px 0;
+    }
+
+    .location-box a {
+      display: inline-block;
+      margin-top: 12px;
+      color: #8d461d;
+      font-weight: bold;
+    }
+
+    .cta {
+      background: #422719;
+      color: white;
+    }
+
+    .cta h2 {
+      font-size: 34px;
+      margin-bottom: 15px;
+    }
+
+    .cta p {
+      margin-bottom: 25px;
+    }
+
+    footer {
+      background: #2c1a11;
+      color: #e9d9c8;
+      text-align: center;
+      padding: 25px 7%;
+      font-size: 14px;
+    }
+
+    footer .footer-logo {
+      font-size: 21px;
+      font-weight: bold;
+      color: #ffc15e;
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 650px) {
+      header {
+        justify-content: center;
+        text-align: center;
+      }
+
+      nav {
+        justify-content: center;
+        gap: 14px;
+      }
+
+      .hero {
+        min-height: 470px;
+        padding: 55px 6%;
+      }
+
+      .hero p {
+        font-size: 17px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 55px 6%;
+      }
+
+      .section-title,
+      .cta h2 {
+        font-size: 29px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">🔥 Estação Carreteiro</div>
+
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#sobre">Nossa ideia</a>
+      <a href="#local">Localização</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- INÍCIO -->
+    <section class="hero" id="inicio">
+      <div class="hero-content">
+
+        <span class="tag">FEIRA DE EMPREENDEDORISMO</span>
+
+        <h1>
+          Estação Carreteiro:
+          <span>uma parada obrigatória para o sabor!</span>
+        </h1>
+
+        <p>
+          Sabor marcante, tempero especial e aquele carinho
+          que transforma uma refeição em uma experiência.
+          Venha conhecer nosso arroz carreteiro!
+        </p>
+
+        <a href="#cardapio" class="btn">
+          🍚 Conheça nosso prato
+        </a>
+
+      </div>
+    </section>
+
+    <!-- CARDÁPIO -->
+    <section id="cardapio">
+      <h2 class="section-title">Nosso prato especial</h2>
+
+      <p class="section-text">
+        Na Estação Carreteiro, a estrela é um clássico
+        cheio de sabor. Prepare-se para experimentar
+        um arroz carreteiro feito com muito capricho!
+      </p>
+
+      <div class="food-card">
+
+        <img
+          src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=85"
+          alt="Prato de comida com arroz, imagem ilustrativa"
+          loading="lazy"
+        >
+
+        <div class="food-info">
+          <h3>🍛 Arroz Carreteiro</h3>
+
+          <p>
+            Uma combinação deliciosa de arroz,
+            temperos e ingredientes saborosos.
+            O prato perfeito para quem ama comer bem!
+          </p>
+
+          <!-- SUBSTITUA PELO PREÇO DA SUA PORÇÃO -->
+          <div class="price">R$ XX,XX</div>
+
+          <p>Feito com carinho para você!</p>
+
+          <a href="#local" class="btn">
+            Venha experimentar
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DIFERENCIAIS -->
+    <section class="features" id="sobre">
+      <h2 class="section-title">Muito mais que arroz!</h2>
+
+      <p class="section-text">
+        Uma ideia empreendedora com sabor, dedicação
+        e vontade de fazer acontecer.
+      </p>
+
+      <div class="feature-grid">
+
+        <div class="feature">
+          <div class="emoji">❤️</div>
+          <h3>Feito com carinho</h3>
+          <p>Cada detalhe pensado para oferecer uma boa experiência.</p>
+        </div>
+
+        <div class="feature">
+          <div class="emoji">🍚</div>
+          <h3>Sabor de verdade</h3>
+          <p>Uma receita saborosa para deixar vontade de repetir.</p>
+        </div>
+
+        <div class="feature">
+          <div class="emoji">🚂</div>
+          <h3>Uma ideia que vai longe</h3>
+          <p>Empreendedorismo, criatividade e paixão pela culinária.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LOCALIZAÇÃO -->
+    <section id="local">
+      <h2 class="section-title">Faça uma parada na nossa estação!</h2>
+
+      <p class="section-text">
+        Estamos esperando você na Feira de Empreendedorismo
+        do Colégio Athenas. Chame os amigos e venha prestigiar!
+      </p>
+
+      <div class="location-box">
+
+        <p>📍 <strong>Local:</strong> Colégio Athenas</p>
+        <p>🛣️ <strong>Endereço:</strong> Rua do Engenheiro, 60</p>
+        <p>🏙️ <strong>Cidade:</strong> Uberlândia – MG</p>
+
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=Col%C3%A9gio+Athenas%2C+Rua+do+Engenheiro%2C+60%2C+Uberl%C3%A2ndia%2C+MG"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📌 Abrir no Google Maps →
+        </a>
+
+        <p style="margin-top: 22px;">
+          📅 <strong>Data:</strong> 14/11/2026
+        </p>
+
+        <p>
+          🕒 <strong>Horário:</strong> 15h às 17h30
+        </p>
+
+      </div>
+    </section>
+
+    <!-- CONVITE FINAL -->
+    <section class="cta">
+      <h2>Seu próximo prato favorito está aqui! 😋</h2>
+
+      <p>
+        Estação Carreteiro: chegou a hora de matar a fome
+        com muito sabor!
+      </p>
+
+      <a href="#local" class="btn">
+        📍 Venha nos visitar
+      </a>
+    </section>
+
+  </main>
+
+  <footer>
+    <p class="footer-logo">🔥 Estação Carreteiro</p>
+    <p>Feira de Empreendedorismo • Colégio Athenas</p>
+    <p>Uberlândia – MG</p>
+    <p style="margin-top: 12px;">
+      © 2026 Estação Carreteiro. Feito com ❤️
+    </p>
+  </footer>
+
+</body>
+</html>
