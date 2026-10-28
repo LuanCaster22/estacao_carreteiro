@@ -2,366 +2,469 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pesadelo Neon</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#05030c;color:#eee;font-family:Arial,sans-serif;
-overflow:hidden;touch-action:none}
-canvas{display:block;width:100vw;height:100dvh}
-#hud{position:fixed;top:12px;left:12px;right:12px;display:none;
-justify-content:space-between;gap:8px;pointer-events:none;font-size:13px}
-.panel{background:#100b20dd;border:1px solid #a855f7;padding:10px;
-border-radius:10px;box-shadow:0 0 14px #8b5cf655}
-#menu{position:fixed;inset:0;display:flex;align-items:center;
-justify-content:center;background:radial-gradient(ellipse,#251039,#05030c 70%);
-padding:20px;text-align:center;z-index:5}
-.content{width:min(440px,100%)}
-h1{font-size:clamp(32px,8vw,55px);color:#e879f9;
-text-shadow:0 0 10px #a855f7,0 0 35px #7c3aed;margin:0 0 8px}
-p{color:#c4b5fd;line-height:1.5}
-button{background:#170c2a;color:white;border:1px solid #c084fc;
-border-radius:10px;padding:14px 18px;font-size:15px;font-weight:bold;
-cursor:pointer;box-shadow:0 0 12px #9333ea55}
-button:active{transform:scale(.96)}
-.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}
-.modes button{min-height:100px}
-small{display:block;font-weight:normal;color:#c4b5fd;margin-top:8px}
-#controls{position:fixed;bottom:18px;left:0;right:0;display:none;
-justify-content:space-between;padding:0 18px;pointer-events:none}
-.pad{display:grid;grid-template-columns:repeat(3,48px);gap:5px;
-pointer-events:auto}
-.pad button,#act{padding:0;height:45px;font-size:20px;
-background:#160b26cc;touch-action:none}
-.pad .empty{visibility:hidden}
-#act{width:78px;height:78px;border-radius:50%;align-self:end;
-pointer-events:auto;font-size:12px}
-#hint{position:fixed;bottom:110px;left:0;right:0;text-align:center;
-color:#e9d5ff;font-size:12px;pointer-events:none}
-@media(min-width:800px){#controls{opacity:.55}.pad button{width:48px}}
-</style>
-</head>
-<body>
-<canvas id="game"></canvas>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div id="hud">
-  <div class="panel" id="health">VIDA: ♥ ♥ ♥</div>
-  <div class="panel" id="objective">OBJETIVO</div>
-  <div class="panel" id="score">PONTOS: 0</div>
-</div>
+  <title>Estação Carreteiro | Sabor de Verdade</title>
 
-<div id="menu">
-  <div class="content">
-    <h1>PESADELO<br>NEON</h1>
-    <p id="description">A noite caiu. Algo está caçando você.<br>
-    Escolha como deseja sobreviver.</p>
-    <div class="modes">
-      <button onclick="start('escape')">🚪 MODO FUGA
-        <small>Encontre a chave e escape dos monstros.</small>
-      </button>
-      <button onclick="start('survival')">☠️ SOBREVIVÊNCIA
-        <small>Derrote as criaturas e sobreviva às ondas.</small>
-      </button>
-    </div>
-    <p style="font-size:12px">PC: WASD ou setas · SHIFT corre<br>
-    Fuga: E pega a chave · Sobrevivência: ESPAÇO ataca</p>
-    <button id="again" style="display:none" onclick="start(mode)">JOGAR NOVAMENTE</button>
-  </div>
-</div>
+  <meta name="description" content="Conheça a Estação Carreteiro! Venha experimentar nosso arroz carreteiro na Feira de Empreendedorismo do Colégio Athenas, em Uberlândia.">
 
-<div id="hint">Encontre a chave. Não deixe que eles te alcancem.</div>
-<div id="controls">
-  <div class="pad">
-    <button class="empty"> </button><button data-key="ArrowUp">▲</button><button class="empty"> </button>
-    <button data-key="ArrowLeft">◀</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button>
-  </div>
-  <button id="act">AÇÃO</button>
-</div>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<script>
-const canvas=document.querySelector('#game');
-const ctx=canvas.getContext('2d');
-const menu=document.querySelector('#menu');
-const hud=document.querySelector('#hud');
-const controls=document.querySelector('#controls');
-const hint=document.querySelector('#hint');
+    html {
+      scroll-behavior: smooth;
+    }
 
-let W=0,H=0,dpr=1,mode='escape',running=false;
-let player,monsters,items,particles,walls,keys={},score=0,wave=1;
-let gameTime=0,last=0,spawnTimer=0,attackTimer=0;
-let exit,keyItem,worldW=1800,worldH=1300,flash=0;
-const rand=(a,b)=>a+Math.random()*(b-a);
-const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff8ed;
+      color: #38251b;
+      line-height: 1.6;
+    }
 
-function resize(){
-  dpr=Math.min(devicePixelRatio||1,2);
-  W=innerWidth;H=innerHeight;
-  canvas.width=W*dpr;canvas.height=H*dpr;
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-}
-addEventListener('resize',resize);resize();
+    header {
+      background: #422719;
+      color: white;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
 
-function start(m){
-  mode=m;running=true;score=0;wave=1;gameTime=0;
-  spawnTimer=0;attackTimer=0;flash=0;
-  player={x:worldW/2,y:worldH/2,r:12,hp:100,
-    speed:190,angle:0,inv:0};
-  monsters=[];items=[];particles=[];walls=[];
-  // Paredes internas deixam corredores para explorar.
-  for(let i=0;i<20;i++){
-    let x=rand(100,worldW-220),y=rand(100,worldH-220);
-    let w=rand(65,170),h=rand(35,90);
-    if(Math.hypot(x+w/2-player.x,y+h/2-player.y)<220)continue;
-    walls.push({x,y,w,h});
-  }
-  exit={x:worldW-90,y:worldH-90,r:25};
-  keyItem= mode==='escape'
-    ?{x:rand(100,worldW-100),y:rand(100,worldH-100),r:10,got:false}
-    :null;
-  if(keyItem){
-    for(let i=0;i<20;i++){
-      if(walls.some(a=>keyItem.x>a.x-15&&keyItem.x<a.x+a.w+15&&
-        keyItem.y>a.y-15&&keyItem.y<a.y+a.h+15)){
-        keyItem.x=rand(100,worldW-100);keyItem.y=rand(100,worldH-100);
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+      color: #ffc15e;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #ffc15e;
+    }
+
+    .hero {
+      min-height: 550px;
+      padding: 80px 7%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      background:
+        linear-gradient(
+          rgba(35, 19, 10, 0.72),
+          rgba(35, 19, 10, 0.78)
+        ),
+        url("https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1600&q=85")
+        center/cover;
+    }
+
+    .hero-content {
+      max-width: 780px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #ffc15e;
+      color: #422719;
+      padding: 8px 17px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 7vw, 68px);
+      line-height: 1.1;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 span {
+      color: #ffc15e;
+    }
+
+    .hero p {
+      font-size: 19px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #e99b2e;
+      color: #301b10;
+      padding: 14px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: #ffc15e;
+      transform: translateY(-2px);
+    }
+
+    section {
+      padding: 70px 7%;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 34px;
+      line-height: 1.2;
+      color: #5a301b;
+      margin-bottom: 15px;
+    }
+
+    .section-text {
+      max-width: 650px;
+      margin: 0 auto 35px;
+      color: #705c4d;
+    }
+
+    .food-card {
+      max-width: 430px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(66, 39, 25, 0.12);
+      text-align: left;
+    }
+
+    .food-card img {
+      display: block;
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+    }
+
+    .food-info {
+      padding: 25px;
+    }
+
+    .food-info h3 {
+      font-size: 25px;
+      margin-bottom: 10px;
+    }
+
+    .food-info p {
+      color: #705c4d;
+      margin-bottom: 15px;
+    }
+
+    .price {
+      color: #a4511d;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .features {
+      background: #f4e5cf;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+      max-width: 1000px;
+      margin: 35px auto 0;
+    }
+
+    .feature {
+      background: white;
+      padding: 28px 20px;
+      border-radius: 14px;
+    }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .feature h3 {
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: #705c4d;
+    }
+
+    .location-box {
+      background: white;
+      border: 1px solid #ead8c2;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 650px;
+      margin: 30px auto 0;
+    }
+
+    .location-box p {
+      margin: 10px 0;
+    }
+
+    .location-box a {
+      display: inline-block;
+      margin-top: 12px;
+      color: #8d461d;
+      font-weight: bold;
+    }
+
+    .cta {
+      background: #422719;
+      color: white;
+    }
+
+    .cta h2 {
+      font-size: 34px;
+      margin-bottom: 15px;
+    }
+
+    .cta p {
+      margin-bottom: 25px;
+    }
+
+    footer {
+      background: #2c1a11;
+      color: #e9d9c8;
+      text-align: center;
+      padding: 25px 7%;
+      font-size: 14px;
+    }
+
+    footer .footer-logo {
+      font-size: 21px;
+      font-weight: bold;
+      color: #ffc15e;
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 650px) {
+      header {
+        justify-content: center;
+        text-align: center;
+      }
+
+      nav {
+        justify-content: center;
+        gap: 14px;
+      }
+
+      .hero {
+        min-height: 470px;
+        padding: 55px 6%;
+      }
+
+      .hero p {
+        font-size: 17px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 55px 6%;
+      }
+
+      .section-title,
+      .cta h2 {
+        font-size: 29px;
       }
     }
-  }
-  for(let i=0;i<(mode==='escape'?4:3);i++)spawnMonster(true);
-  menu.style.display='none';hud.style.display='flex';
-  controls.style.display='flex';
-  hint.textContent=mode==='escape'
-    ?'Encontre a chave dourada e chegue à saída verde!'
-    :'Sobreviva às ondas! Use ESPAÇO ou AÇÃO para atacar.';
-  updateHud();last=performance.now();
-}
-function spawnMonster(initial=false){
-  let x,y;
-  do{x=rand(30,worldW-30);y=rand(30,worldH-30)}
-  while(Math.hypot(x-player.x,y-player.y)<(initial?260:320));
-  monsters.push({x,y,r:rand(13,17),hp:mode==='survival'?2:1,
-    speed:rand(48,67)+(wave-1)*4,hit:0});
-}
-function updateHud(){
-  document.querySelector('#health').textContent=
-    'VIDA: '+ '♥'.repeat(Math.ceil(player.hp/34))+' · '+Math.max(0,player.hp)+'%';
-  document.querySelector('#objective').textContent=mode==='escape'
-    ?(keyItem.got?'OBJETIVO: SAÍDA VERDE':'OBJETIVO: CHAVE DOURADA')
-    :'ONDA: '+wave;
-  document.querySelector('#score').textContent='PONTOS: '+score;
-}
-function end(win){
-  running=false;menu.style.display='flex';
-  document.querySelector('#description').innerHTML=win
-    ?'✨ VOCÊ SOBREVIVEU!<br>Pontos: '+score
-    :'☠️ VOCÊ FOI ENCONTRADO...<br>Pontos: '+score;
-  document.querySelector('.modes').style.display='none';
-  document.querySelector('#again').style.display='inline-block';
-  hud.style.display='none';controls.style.display='none';
-  hint.textContent='';
-}
-function rectHit(x,y,r,a){
-  let cx=clamp(x,a.x,a.x+a.w),cy=clamp(y,a.y,a.y+a.h);
-  return Math.hypot(x-cx,y-cy)<r;
-}
-function blocked(x,y,r){
-  return x<r||y<r||x>worldW-r||y>worldH-r||
-    walls.some(a=>rectHit(x,y,r,a));
-}
-function moveEntity(e,dx,dy){
-  if(!blocked(e.x+dx,e.y,e.r))e.x+=dx;
-  if(!blocked(e.x,e.y+dy,e.r))e.y+=dy;
-}
-function burst(x,y,color,n=8){
-  for(let i=0;i<n;i++)particles.push({
-    x,y,vx:rand(-100,100),vy:rand(-100,100),
-    life:rand(.2,.7),color
-  });
-}
-function attack(){
-  if(!running||mode!=='survival'||attackTimer>0)return;
-  attackTimer=.45;flash=.12;
-  let found=false;
-  for(let i=monsters.length-1;i>=0;i--){
-    let m=monsters[i],d=dist(player,m);
-    let a=Math.atan2(m.y-player.y,m.x-player.x);
-    let diff=Math.atan2(Math.sin(a-player.angle),Math.cos(a-player.angle));
-    if(d<105&&Math.abs(diff)<1.05){
-      m.hp--;m.hit=.16;burst(m.x,m.y,'#fb7185',12);
-      if(m.hp<=0){monsters.splice(i,1);score+=100;}
-      found=true;
-    }
-  }
-  if(!found)burst(player.x+Math.cos(player.angle)*45,
-    player.y+Math.sin(player.angle)*45,'#c084fc',4);
-}
-function interact(){
-  if(!running)return;
-  if(mode==='escape'&&!keyItem.got&&dist(player,keyItem)<45){
-    keyItem.got=true;score+=100;
-    hint.textContent='CHAVE ENCONTRADA! Corra para a saída verde!';
-    burst(keyItem.x,keyItem.y,'#facc15',20);
-  }else if(mode==='escape'&&keyItem.got&&dist(player,exit)<48){
-    score+=500;end(true);
-  }
-}
-function update(dt){
-  if(!running)return;
-  gameTime+=dt;attackTimer=Math.max(0,attackTimer-dt);
-  flash=Math.max(0,flash-dt);
-  player.inv=Math.max(0,player.inv-dt);
-  let dx=0,dy=0;
-  if(keys.ArrowLeft||keys.a||keys.A)dx--;
-  if(keys.ArrowRight||keys.d||keys.D)dx++;
-  if(keys.ArrowUp||keys.w||keys.W)dy--;
-  if(keys.ArrowDown||keys.s||keys.S)dy++;
-  let len=Math.hypot(dx,dy)||1;
-  let sprint=keys.Shift?1.55:1;
-  player.x=clamp(player.x,player.r,worldW-player.r);
-  player.y=clamp(player.y,player.r,worldH-player.r);
-  if(dx||dy){
-    player.angle=Math.atan2(dy,dx);
-    moveEntity(player,dx/len*player.speed*sprint*dt,
-      dy/len*player.speed*sprint*dt);
-  }
-  if(mode==='survival'){
-    spawnTimer-=dt;
-    if(spawnTimer<=0&&monsters.length<Math.min(20,3+wave*2)){
-      spawnMonster();spawnTimer=Math.max(.55,2-wave*.12);
-    }
-    if(monsters.length===0){wave++;spawnTimer=1;}
-  }
-  for(let m of monsters){
-    let d=dist(player,m)||1;
-    let vx=(player.x-m.x)/d,vy=(player.y-m.y)/d;
-    m.hit=Math.max(0,m.hit-dt);
-    moveEntity(m,vx*m.speed*dt,vy*m.speed*dt);
-    if(d<player.r+m.r+3&&player.inv<=0){
-      player.hp-=mode==='escape'?24:18;
-      player.inv=.8;burst(player.x,player.y,'#fb7185',10);
-      if(player.hp<=0){updateHud();end(false);return;}
-    }
-  }
-  for(let p of particles){
-    p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;
-    p.vx*=.97;p.vy*=.97;
-  }
-  particles=particles.filter(p=>p.life>0);
-  if(mode==='escape'&&keyItem&&!keyItem.got&&dist(player,keyItem)<24){
-    keyItem.got=true;score+=100;
-    hint.textContent='CHAVE ENCONTRADA! Vá até a saída verde!';
-    burst(keyItem.x,keyItem.y,'#facc15',20);
-  }
-  if(mode==='escape'&&keyItem.got&&dist(player,exit)<38){
-    score+=500;end(true);return;
-  }
-  score+=dt*(mode==='survival'?2:0);
-  updateHud();
-}
-function draw(){
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#070510';ctx.fillRect(0,0,W,H);
-  let camX=clamp(player?player.x-W/2:0,0,worldW-W);
-  let camY=clamp(player?player.y-H/2:0,0,worldH-H);
-  ctx.save();ctx.translate(-camX,-camY);
-  // Piso e grade neon
-  ctx.fillStyle='#0b0917';ctx.fillRect(0,0,worldW,worldH);
-  ctx.strokeStyle='#28153b';ctx.lineWidth=1;
-  for(let x=0;x<worldW;x+=50){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,worldH);ctx.stroke();}
-  for(let y=0;y<worldH;y+=50){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(worldW,y);ctx.stroke();}
-  // Limites do mapa
-  ctx.strokeStyle='#a855f7';ctx.lineWidth=4;
-  ctx.strokeRect(0,0,worldW,worldH);
-  // Paredes
-  for(let a of walls){
-    ctx.fillStyle='#171026';ctx.fillRect(a.x,a.y,a.w,a.h);
-    ctx.strokeStyle='#7136a5';ctx.lineWidth=2;ctx.strokeRect(a.x,a.y,a.w,a.h);
-  }
-  if(mode==='escape'&&exit){
-    ctx.save();ctx.shadowBlur=25;ctx.shadowColor=keyItem.got?'#22c55e':'#ef4444';
-    ctx.strokeStyle=keyItem.got?'#4ade80':'#ef4444';
-    ctx.lineWidth=4;ctx.strokeRect(exit.x-20,exit.y-26,40,52);
-    ctx.fillStyle=keyItem.got?'#14532d':'#450a0a';
-    ctx.fillRect(exit.x-16,exit.y-22,32,44);ctx.restore();
-  }
-  if(mode==='escape'&&keyItem&&!keyItem.got){
-    ctx.save();ctx.shadowBlur=22;ctx.shadowColor='#facc15';
-    ctx.fillStyle='#facc15';ctx.translate(keyItem.x,keyItem.y);
-    ctx.rotate(gameTime*2);ctx.fillRect(-8,-8,16,16);
-    ctx.fillRect(2,-2,13,4);ctx.restore();
-  }
-  // Monstros
-  for(let m of monsters){
-    ctx.save();ctx.shadowBlur=22;ctx.shadowColor='#fb174d';
-    ctx.fillStyle=m.hit>0?'#fff':'#54102e';
-    ctx.beginPath();ctx.arc(m.x,m.y,m.r,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='#fb174d';ctx.lineWidth=2;ctx.stroke();
-    ctx.fillStyle='#ff174f';
-    ctx.fillRect(m.x-m.r*.6,m.y-4,5,4);
-    ctx.fillRect(m.x+m.r*.2,m.y-4,5,4);
-    ctx.restore();
-  }
-  // Jogador
-  if(player){
-    ctx.save();ctx.translate(player.x,player.y);
-    ctx.rotate(player.angle);
-    ctx.globalAlpha=player.inv>0&&Math.floor(gameTime*16)%2===0?.35:1;
-    ctx.shadowBlur=25;ctx.shadowColor='#22d3ee';
-    ctx.fillStyle='#0891b2';ctx.strokeStyle='#67e8f9';ctx.lineWidth=2;
-    ctx.beginPath();ctx.arc(0,0,player.r,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.fillStyle='#e0faff';ctx.fillRect(3,-4,9,8);
-    if(flash>0){
-      ctx.shadowColor='#d946ef';ctx.strokeStyle='#e879f9';ctx.lineWidth=5;
-      ctx.beginPath();ctx.arc(0,0,76,-.8,.8);ctx.stroke();
-    }
-    ctx.restore();
-  }
-  for(let p of particles){
-    ctx.globalAlpha=clamp(p.life*2,0,1);ctx.fillStyle=p.color;
-    ctx.fillRect(p.x-2,p.y-2,4,4);
-  }
-  ctx.globalAlpha=1;ctx.restore();
-  // Lanterna circular escura ao redor do jogador
-  if(player){
-    let px=player.x-camX,py=player.y-camY;
-    let g=ctx.createRadialGradient(px,py,35,px,py,Math.max(W,H)*.65);
-    g.addColorStop(0,'#00000000');g.addColorStop(.65,'#03020b66');
-    g.addColorStop(1,'#020109f5');
-    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  }
-  // Moldura
-  ctx.strokeStyle='#8b5cf6';ctx.globalAlpha=.5;
-  ctx.strokeRect(5,5,W-10,H-10);ctx.globalAlpha=1;
-}
-function loop(t){
-  let dt=Math.min((t-last)/1000||0,.035);last=t;
-  update(dt);draw();requestAnimationFrame(loop);
-}
-requestAnimationFrame(loop);
+  </style>
+</head>
 
-addEventListener('keydown',e=>{
-  keys[e.key]=true;
-  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
-  if(e.key.toLowerCase()==='e')interact();
-  if(e.code==='Space'){e.preventDefault();attack();}
-});
-addEventListener('keyup',e=>keys[e.key]=false);
-document.querySelectorAll('[data-key]').forEach(b=>{
-  let k=b.dataset.key;
-  b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true;b.setPointerCapture(e.pointerId);});
-  for(let ev of ['pointerup','pointercancel','lostpointercapture'])
-    b.addEventListener(ev,()=>keys[k]=false);
-});
-document.querySelector('#act').addEventListener('pointerdown',e=>{
-  e.preventDefault();
-  if(mode==='survival')attack();else interact();
-});
-document.querySelector('#act').addEventListener('contextmenu',e=>e.preventDefault());
+<body>
 
-// Tela inicial: cenário animado de demonstração.
-player={x:worldW/2,y:worldH/2,r:12,hp:100,speed:190,angle:0,inv:0};
-monsters=[];items=[];particles=[];walls=[];exit=null;keyItem=null;
-</script>
+  <header>
+    <div class="logo">🔥 Estação Carreteiro</div>
+
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#sobre">Nossa ideia</a>
+      <a href="#local">Localização</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- INÍCIO -->
+    <section class="hero" id="inicio">
+      <div class="hero-content">
+
+        <span class="tag">FEIRA DE EMPREENDEDORISMO</span>
+
+        <h1>
+          Estação Carreteiro:
+          <span>uma parada obrigatória para o sabor!</span>
+        </h1>
+
+        <p>
+          Sabor marcante, tempero especial e aquele carinho
+          que transforma uma refeição em uma experiência.
+          Venha conhecer nosso arroz carreteiro!
+        </p>
+
+        <a href="#cardapio" class="btn">
+          🍚 Conheça nosso prato
+        </a>
+
+      </div>
+    </section>
+
+    <!-- CARDÁPIO -->
+    <section id="cardapio">
+      <h2 class="section-title">Nosso prato especial</h2>
+
+      <p class="section-text">
+        Na Estação Carreteiro, a estrela é um clássico
+        cheio de sabor. Prepare-se para experimentar
+        um arroz carreteiro feito com muito capricho!
+      </p>
+
+      <div class="food-card">
+
+        <img
+          src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=85"
+          alt="Prato de comida com arroz, imagem ilustrativa"
+          loading="lazy"
+        >
+
+        <div class="food-info">
+          <h3>🍛 Arroz Carreteiro</h3>
+
+          <p>
+            Uma combinação deliciosa de arroz,
+            temperos e ingredientes saborosos.
+            O prato perfeito para quem ama comer bem!
+          </p>
+
+          <!-- SUBSTITUA PELO PREÇO DA SUA PORÇÃO -->
+          <div class="price">R$ "NAO DEFINIDO" </div>
+
+          <p>Feito com carinho para você!</p>
+
+          <a href="#local" class="btn">
+            Venha experimentar
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DIFERENCIAIS -->
+    <section class="features" id="sobre">
+      <h2 class="section-title">Muito mais que arroz!</h2>
+
+      <p class="section-text">
+        Uma ideia empreendedora com sabor, dedicação
+        e vontade de fazer acontecer.
+      </p>
+
+      <div class="feature-grid">
+
+        <div class="feature">
+          <div class="emoji">❤️</div>
+          <h3>Feito com carinho</h3>
+          <p>Cada detalhe pensado para oferecer uma boa experiência.</p>
+        </div>
+
+        <div class="feature">
+          <div class="emoji">🍚</div>
+          <h3>Sabor de verdade</h3>
+          <p>Uma receita saborosa para deixar vontade de repetir.</p>
+        </div>
+
+        <div class="feature">
+          <div class="emoji">🚂</div>
+          <h3>Uma ideia que vai longe</h3>
+          <p>Empreendedorismo, criatividade e paixão pela culinária.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LOCALIZAÇÃO -->
+    <section id="local">
+      <h2 class="section-title">Faça uma parada na nossa estação!</h2>
+
+      <p class="section-text">
+        Estamos esperando você na Feira de Empreendedorismo
+        do Colégio Athenas. Chame os amigos e venha prestigiar!
+      </p>
+
+      <div class="location-box">
+
+        <p>📍 <strong>Local:</strong> Colégio Athenas</p>
+        <p>🛣️ <strong>Endereço:</strong> Rua do Engenheiro, 60</p>
+        <p>🏙️ <strong>Cidade:</strong> Uberlândia – MG</p>
+        <p><strong>Turma:</strong> 8°B <p>
+        
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=Col%C3%A9gio+Athenas%2C+Rua+do+Engenheiro%2C+60%2C+Uberl%C3%A2ndia%2C+MG"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📌 Abrir no Google Maps →
+        </a>
+
+        <p style="margin-top: 22px;">
+          📅 <strong>Data:</strong> 14/11/2026
+        </p>
+
+        <p>
+          🕒 <strong>Horário:</strong> 15h às 17h30
+        </p>
+
+      </div>
+    </section>
+
+    <!-- CONVITE FINAL -->
+    <section class="cta">
+      <h2>Seu próximo prato favorito está aqui! 😋</h2>
+
+      <p>
+        Estação Carreteiro: chegou a hora de matar a fome
+        com muito sabor!
+      </p>
+
+      <a href="#local" class="btn">
+        📍 Venha nos visitar
+      </a>
+    </section>
+
+  </main>
+
+  <footer>
+    <p class="footer-logo">🔥 Estação Carreteiro</p>
+    <p>Feira de Empreendedorismo • Colégio Athenas</p>
+    <p>Uberlândia – MG</p>
+    <p style="margin-top: 12px;">
+      © 2026 Estação Carreteiro. Feito com ❤️
+    </p>
+  </footer>
+
 </body>
 </html>
